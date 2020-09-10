@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/jquery.bxslider.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/normalize.css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Alice&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="ls/css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/smarthome.css">
+
+<style>
+.menu-box-menu li {
+    height: 20%;
+    position: relative;
+}
+.menu-box-tab {
+    line-height: 400%;
+    display: block;
+    border-bottom: 1px solid rgb(31, 37, 61);
+    -webkit-transition: background .2s;
+    transition: background .2s;
+    height: 100%;
+}
+
+.menu-box-menu .icon {
+    display: inline-block;
+    vertical-align: top;
+    width: 28px;
+    margin-left: 20px;
+    margin-right: 15px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.power-switch {
+  --color-invert: #ffffff;
+  --width: 150px;
+  --height: 150px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--width);
+  height: var(--height);
+}
+.power-switch .button {
+  width: 50%;
+  height: 102%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.power-switch .button:after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: radial-gradient(circle closest-side, var(--color-invert), transparent);
+  filter: blur(20px);
+  opacity: 0;
+  transition: opacity 1s ease, transform 1s ease;
+  transform: perspective(1px) translateZ(0);
+  backface-visibility: hidden;
+}
+.power-switch .button .power-on,
+.power-switch .button .power-off {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  fill: none;
+  stroke: var(--color-invert);
+  stroke-width: 8px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.power-switch .button .power-on .line,
+.power-switch .button .power-off .line {
+  opacity: 0.2;
+}
+.power-switch .button .power-on .circle,
+.power-switch .button .power-off .circle {
+  opacity: 0.2;
+  transform: rotate(-58deg);
+  transform-origin: center 80px;
+  stroke-dasharray: 220;
+  stroke-dashoffset: 40;
+}
+.power-switch .button .power-on {
+  filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.8));
+}
+.power-switch .button .power-on .line {
+  opacity: 0;
+  transition: opacity 0.3s ease 1s;
+}
+.power-switch .button .power-on .circle {
+  opacity: 1;
+  stroke-dashoffset: 220;
+  transition: transform 0s ease, stroke-dashoffset 1s ease 0s;
+}
+.power-switch input {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  cursor: pointer;
+  opacity: 0;
+}
+.power-switch input:checked + .button:after {
+  opacity: 0.15;
+  transform: scale(2) perspective(1px) translateZ(0);
+  backface-visibility: hidden;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.power-switch input:checked + .button .power-on,
+.power-switch input:checked + .button .power-off {
+  animation: click-animation 0.3s ease forwards;
+  transform: scale(1);
+}
+.power-switch input:checked + .button .power-on .line,
+.power-switch input:checked + .button .power-off .line {
+  animation: line-animation 0.8s ease-in forwards;
+}
+.power-switch input:checked + .button .power-on .circle,
+.power-switch input:checked + .button .power-off .circle {
+  transform: rotate(302deg);
+}
+.power-switch input:checked + .button .power-on .line {
+  opacity: 1;
+  transition: opacity 0.05s ease-in 0.55s;
+}
+.power-switch input:checked + .button .power-on .circle {
+  transform: rotate(302deg);
+  stroke-dashoffset: 40;
+  transition: transform 0.4s ease 0.2s, stroke-dashoffset 0.4s ease 0.2s;
+}
+
+@keyframes line-animation {
+  0% {
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(10px);
+  }
+  40% {
+    transform: translateY(-25px);
+  }
+  60% {
+    transform: translateY(-25px);
+  }
+  85% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+@keyframes click-animation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+</style>
+        <script>
+
+//////////////////////time /////////////////////////////
+          function startTime() {
+            var today = new Date();
+            let date = ("0" + today.getDate()).slice(-2);  // adjust 0 before single digit date
+            let month = ("0" + (today.getMonth() + 1)).slice(-2);  // current month
+            let year = today.getFullYear();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            document.getElementById('wel2').innerHTML =
+            date+"-"+month+"-"+year+"  "+h + ":" + m + ":" + s;
+            var t = setTimeout(startTime, 500);
+          }
+          function checkTime(i) {
+            if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+            return i;
+          }
+          </script>
+
+
+
+
+    </head>
+    <body >
+
+    <header class="container">
+        <div id='temprt' style='width:15%;margin-top:29px;font-size:xx-large;' class="wheather">
+
+        </div>
+        <div id="neww" class="sd">    
+          <h1 id='wel'> 
+              welcome mr , <%= name %>
+             </h1>
+             
+            <h1 id='wel2'>00-00-0000 00:00:00</h1>
+        </div>
+        <div class="main">
+            <section class="mainScreen" id="really">
+             
+
+                <div class="center">
+                    <div class="list">
+                        <ul class=" firstlist">
+                          <li >
+                            <button id="23" type="button" class="camera btn from-left ">
+                              <span id="b23"></span>
+                              <span>camera<span>
+                              </button>
+                          </li >
+                          <li>
+                            <button id="24" type="button" class="btn mediaPlayer from-left ">
+                              <span id="b24"></span>
+                              <span>media<span>
+                            </button>
+                          </li>
+                          <li >
+                            <button id="25" type="button" class=" tasks btn from-left ">
+                              <span id="b25"></span>
+                              <span>tasks<span>
+                            </button>
+                          </li>
+                            <li >
+                            <button id="26" type="button" class="control btn from-left ">
+                              <span id="b26"></span>
+                              <span>control<span>
+                            </button>
+                          </li>
+
+
+                            <li >
+                                <button id="27" type="button" class="managesys btn from-left ">
+                                    <span id="b27"></span>
+                                    <span>sysctl<span>
+                                </button>
+                            </li>
+
+
+                        </ul>
+
+                    </div>
+                    <div class="music">
+                      <ul id="b1">
+                        <li><i id="b111" onclick="musicprev()" class="fas fa-caret-left"></i></li>
+                        <li><i id="b112" onclick="musicpause()" class="fas fa-grip-lines-vertical"></i></li>
+                        <li><i id="b113" onclick="musicnext()" class="fas fa-caret-right"></i></li>
+                      </ul>
+                    </div>
+
+
+
+
+
+                </div>
+                
+
+              </section>
+              <section class="icons" >
+                  <ul>
+                      <li class="themes"> <i id="1" class="fas fa-palette"></i><li>
+                      <li class="userinfo"><i id="2" class="fas fa-user-circle"></i><li>
+                      <li class="menu">  <i id="3" class="fas fa-home"></i><li>
+                      <li class=""><i id="4" class="fas fa-bell"></i><li>
+                      
+                        <li class="bclose">
+                           <i id="5" class="fas fa-power-off" ></i><li>
+
+                          <!--  <form class ="bclose"  method="POST"  action="/logout" >
+                              <input  id="5" class="fas fa-power-off" type="submit" value="">
+                            </form> -->
+
+
+                  </ul>
+
+                </section>
+
+
+            </div>
+
+
+
+          </header>
+
+          <section class=" tsk">
+            <div class="popupInner "id="6">
+              <div class="closeScreen closetsk" >
+                <i id="7" class="far fa-times-circle"></i>
+              </div>
+
+              <ul  >
+                <li>
+                  <button id="8" type="button" class="btn from-left ">
+                    <span id="b8"></span>
+                    <span>notes<span>
+                  </button>
+                </li>
+                <li>
+                  <button id="9" type="button" class="btn from-left ">
+                    <span id="b9"></span>
+                    <span>allarm<span>
+                  </button>
+                </li>
+              </ul>
+
+            </div>
+          </section>
+          <section class="msc">
+            <div id="10" class="popupInner">
+              <div  class="closeScreen closemsc">
+                <i id="11" class="far fa-times-circle"></i>
+              </div>
+
+              <ul  >
+                <li>
+                  <button id="12" type="button" class="player from-left btn" >
+                    <span id="b12"></span>
+                    <span>player<span>
+                  </button>
+                </li>
+                <li>
+                  <button id="13" type="button" class="btn social from-left">
+                    <span id="b13"></span>
+                    <span>social<span>
+                  </button>
+                </li>
+                <li>
+                  <button id="14" type="button" class="btn browser from-left">
+                    <span id="b14"></span>
+                    <span>browser<span>
+                  </button>
+                </li>
+              </ul>
+
+            </div>
+          </section>
+
+          <section class="ctl">
+            <div id="15" class="popupInner">
+              <div  class="closeScreen closectl">
+                <i id="16" class="far fa-times-circle"></i>
+              </div>
+
+
+              <%- include('parts/control')%>
+
+
+
+
+
+            </div>
+          </section>
+
+    <!-- ////////////////////////////////////////////////////////// terminal popup    ////////////////////////////////////////////////// -->
+    <section class="popupterminal">
+        <div class="popupInner" id="18">
+            <div  class="closeScreen closectl">
+                <i id="19" class="far fa-times-circle"></i>
+            </div>
+            <!--           frame     -->
+            <iframe src="" height="456" width="810" scrolling="no"   frameBorder="0" ></iframe>
+        </div>
+    </section>
+
+
+<!-- camera -->
+<section class="popupcamera">
+  <div class="popupInner" id="1818">
+      <div  class="closeScreen closectl">
+          <i id="19" class="far fa-times-circle"></i>
+      </div>
+      <!--           frame     -->
+      <iframe id='editframe' src="http://192.168.1.3:4747" height="456" width="810" scrolling="no"   frameBorder="0" ></iframe>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       <!-- ////////////////////////////////////////////////////////// user info  popup    ////////////////////////////////////////////////// -->
+ 
+       <section class="usrinfo">
+
+
+      
+        <div class="wrapper">
+          <div class="popupInner" id="222" >
+            <div class="profile-card__img">
+              <img src="userinfo/images/12.jpg" alt="profile card">
+            </div>
+
+
+              <div class="profile-card ">
+              
+
+
+
+                <div class="hs">
+               <h1 class="hsn" id="h1"> <%= name %> </h1>
+               <h1 id="h2">id :  <%= id %></h1>
+               <h1 id="h2">username :  <%= username %></h1>
+               <h1 id="h2">admin :  <%= admin%></h1>
+               <h1 id="h2">permission :  <%= permission %></h1>
+              </div>
+
+
+
+                      
+                <button class="edit-info btn btn-outline-info">edit info</button>
+
+              </div>
+
+      
+          
+
+              <div class="back">
+                <div class="containerinfo">
+                    <div class="rowinfo">
+                        <div class="col-sm-6 col-md-4 col-md-offset-4">
+                            
+                            <div class="account-wall">
+                                <form class="form-signin" method="POST"  action="/editInfo">
+                                  <input type="text"       placeholder="username"                 name="infoUsername"    class="form-control" autofocus>
+                                  <input type="password"   placeholder="enter your old password"  name="infoPassword"    class="form-control">
+                                  <input type="password"   placeholder="enter your new password"  name="infoRepassword"  class="form-control"  >
+                                  <div class="d-inline-flex ">
+                                    <input  class="btn btnn btn-outline-info" type="submit" value="apply">
+
+                                          <button  class="cancel btn btnn btn-outline-info" >cancel</button> 
+
+  
+                                  </div>
+                                    
+                                          
+                                
+                                
+                                </form>
+                            </div>
+                          
+                        </div>
+                    </div>
+                </div>
+              
+              
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+      
+
+
+    </section>
+
+
+       <!-- //////////////////////////////////////////////////////      call nwjs      /////////////////////////////////////////////////////////// -->
+
+          <!-- //////////////////////////////////////////////////////      player open file inside media      /////////////////////////////////////////////////////////// -->
+          <section class="cal">
+              <div class="popupInner" id="20">
+                  <div  class="closeScreen closecall">
+                      <i id="21" class="far fa-times-circle"></i>
+                  </div>
+
+                  <iframe src=":80" height="566" width="999" scrolling="no"   frameBorder="0" ></iframe>
+                  <!-- <ul  >
+
+                   <li>
+                         <button type="button" class="btn social from-left nwjscall ">
+                             <span></span>
+                             <span>add music<span>
+                         </button>
+                     </li>
+
+
+
+                  </ul>-->
+              </div>
+          </section>
+    <section class="themesmenu">
+        <div class="popupInner" id="22" >
+            <input id="colorjs" class="jscolor" onchange="setCookie('mycolor',document.getElementById('colorjs').style.backgroundColor ,9)" value='000000' >
+
+        </div>
+    </section>
+
+          <!--===============================================================================================-->
+          <!--	<script src="vendor/jquery/jquery-3.2.1.min.js"></script> -->
+          <!--===============================================================================================-->
+
+          <!--===============================================================================================-->
+
+          <!--===============================================================================================-->
+
+          <!--===============================================================================================-->
+
+          <!--===============================================================================================-->
+        <!--  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+      
+        <script src="/con/frontcon.js"></script>
+
+        <script src="https://kit.fontawesome.com/0141fd8a3b.js"></script>
+          <script src="vendor/bootstrap/js/popper.js"></script>
+          <script src="js/jq.js"></script>
+          <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+          <script src="js/main.js"></script>
+    <script src="jscolor.js"></script>
+
+
+
+    <script src="/userinfo/main.js"></script>
+    <link rel="stylesheet" href="/userinfo/main.css">
+
+<script>
+  
+          /////////////////////themes in cookie //////////////////
+          function setCookie(name,value,days) {
+
+var expires = "";
+if (days) {
+    var date = new Date();
+    date.setTime(date.getTime() + (days*24*60*60*1000));
+    expires = "; expires=" + date.toUTCString();
+}
+document.cookie = name + "=" + (value)  + expires + "; path=/";
+
+
+
+document.getElementById('really').style["boxShadow"] =  "0 0px 13px " +value
+for(var i=1;i<28;i++){  document.getElementById(i).style["boxShadow"] =  "0 0px 13px " +  value  }
+
+             ///////////////////////////// music //////////////////////////////////////////////////////
+             document.getElementById('b111').style.color = value
+             document.getElementById('b112').style.color = value
+             document.getElementById('b113').style.color = value
+
+//////////////////////////////////////////////////// span //////////////////////////////////
+
+for(var i=8;i<18;i++){if(i==10||i==11||i==15||i==16){continue;}else{
+document.getElementById('b'+i).style.backgroundColor =value
+}}
+
+for(var i=23;i<28;i++){document.getElementById('b'+i).style.backgroundColor = value}
+
+///////////////////////////////////        textShadow    ////////////////////////////////////////////
+for(var i=7;i<22;i++){if(i==7||i==11||i==16||i==19||i==21){
+  document.getElementById(i).style["textShadow"] =  "0 0px 13px " + value
+}else{continue;}}
+
+
+
+for(var i=1;i<6;i++){document.getElementById(i).style["textShadow"] =  "0 0px 13px " +value}
+
+
+
+document.getElementById('wel').style.color =  value
+document.getElementById('wel2').style.color =  value
+document.getElementById('wel3').style.color = value
+
+}
+getCookie('mycolor')
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) 
+        {
+          document.getElementById('really').style["boxShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length)
+          for(var i=1;i<28;i++){ document.getElementById(i).style["boxShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length) }
+             ///////////////////////////// music //////////////////////////////////////////////////////
+   document.getElementById('b111').style.color = c.substring(nameEQ.length,c.length)
+   document.getElementById('b112').style.color = c.substring(nameEQ.length,c.length)
+   document.getElementById('b113').style.color = c.substring(nameEQ.length,c.length)
+
+   //////////////////////////////////////////////////// span //////////////////////////////////
+   document.getElementById('b17').style.backgroundColor =c.substring(nameEQ.length,c.length)
+   document.getElementById('b14').style.backgroundColor = c.substring(nameEQ.length,c.length)
+   document.getElementById('b13').style.backgroundColor = c.substring(nameEQ.length,c.length)
+   document.getElementById('b12').style.backgroundColor =c.substring(nameEQ.length,c.length)
+   document.getElementById('b9').style.backgroundColor = c.substring(nameEQ.length,c.length)
+   document.getElementById('b8').style.backgroundColor = c.substring(nameEQ.length,c.length)
+   document.getElementById('b23').style.backgroundColor = c.substring(nameEQ.length,c.length)
+   document.getElementById('b24').style.backgroundColor = c.substring(nameEQ.length,c.length)
+   document.getElementById('b25').style.backgroundColor = c.substring(nameEQ.length,c.length)
+   document.getElementById('b26').style.backgroundColor = c.substring(nameEQ.length,c.length)
+   document.getElementById('b27').style.backgroundColor = c.substring(nameEQ.length,c.length)
+///////////////////////////////////        textShadow    ////////////////////////////////////////////
+   document.getElementById('7').style["textShadow"] =  "0 0px 13px " +  c.substring(nameEQ.length,c.length)
+   document.getElementById('11').style["textShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length)
+   document.getElementById('16').style["textShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length)
+   document.getElementById('19').style["textShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length)
+   document.getElementById('21').style["textShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length)
+
+
+   document.getElementById('1').style["textShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length)
+   document.getElementById('2').style["textShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length)
+   document.getElementById('3').style["textShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length)
+   document.getElementById('4').style["textShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length)
+   document.getElementById('5').style["textShadow"] =  "0 0px 13px " + c.substring(nameEQ.length,c.length)
+
+
+   document.getElementById('wel').style.color =   c.substring(nameEQ.length,c.length)
+   document.getElementById('wel2').style.color =  c.substring(nameEQ.length,c.length)
+   document.getElementById('wel3').style.color =  c.substring(nameEQ.length,c.length)
+
+   document.getElementById('colorjs').value=c.substring(nameEQ.length,c.length)
+    }
+}
+    return console.log("null");
+}
+
+
+
+function eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999;';  
+}
+
+
+function musicprev(){
+  console.log('prev')
+
+  $.post('/ioprev',{},function(x){
+
+console.log('done',x)
+
+})
+
+}
+////////////////////////////////////
+    function musicpause(){
+      console.log('pause')
+
+      $.post('/iopause',{},function(x){
+
+console.log('done',x)
+
+})
+
+}
+/////////////////////////////////////////////
+function musicnext(){
+  console.log('next')
+
+
+  $.post('/ionext',{},function(x){
+
+console.log('done',x)
+
+})
+
+}
+
+
+
+
+
+
+
+//time
+// var socket = io.connect('http://127.0.0.1:3001');
+// socket.on('datetime', function (data) {
+  
+       
+// });
+</script>  
+  <!--
+    <script src="/home/aura/Desktop/smart-home/node-webterm-master/new.js"></script>
+    <script src="/home/aura/Desktop/smart-home/node-webterm-master/jscolor.js"></script>
+-->
+    </body>
+</html>
