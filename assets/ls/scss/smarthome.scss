@@ -1,0 +1,43 @@
+@import "compass/css3";
+
+$border-top: (0px -10px tomato);
+$border-right: (10px 0px tan);
+$border-bottom: (0px 10px #58a);
+$border-left: (-10px 0px darkseagreen);
+$border: ($border-top, $border-right, $border-bottom, $border-left);
+
+.box {
+	width: 200px;
+	height: 200px;
+	margin: 100px auto;
+	border-radius: 10px;
+	padding: 20px;
+	outline: 10px solid #fff;
+	outline-offset: -10px;
+	@include box-shadow($border);
+	animation: spin 2s linear infinite;
+}
+
+
+@keyframes spin {
+	0%, 100% {
+		$border-top: (0px -10px rgba(0,0,0,0.5));
+		@include box-shadow(($border-top, $border-right, $border-bottom, $border-left));
+	}
+
+	25% {
+				$border-right: (10px 0px rgba(0,0,0,0.5));
+		@include box-shadow(($border-top, $border-right, $border-bottom, $border-left));
+
+	}
+
+	50% {
+				$border-bottom: (0px 10px rgba(0,0,0,0.5));
+				@include box-shadow(($border-top, $border-right, $border-bottom, $border-left));
+	}
+
+	75% {
+				$border-left: (-10px 0px rgba(0,0,0,0.5));
+				@include box-shadow(($border-top, $border-right, $border-bottom, $border-left));
+	}
+}
